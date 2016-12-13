@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+
+  "name": "dict-chrome-extension",
+  "description": "A chrome extension to search the word you have selected",
+  "version": "1.0",
+
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "css": ["css/content_script.css"],
+    "js": ["js/content_script.js"],
+    "run_at": "document_end"
+  }],
+
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+  "permissions": [
+    "activeTab",
+    "http://*/*",
+    "https://*/*"
+  ]
+}
