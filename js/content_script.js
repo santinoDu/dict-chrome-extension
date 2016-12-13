@@ -14,6 +14,50 @@ const html = `<div id="_dict_box">
         </div>
     </div>`
 
+const body = utils.$('body')
+
+const articleRoot = [
+    {
+        foo (el) {
+            return el.querySelectorAll('h1').length
+        },
+        weight: 1000
+    },
+    {
+        foo (el) {
+            return Number(el.tagName === 'ARTICLE')
+        },
+        weight: 100
+    },
+    {
+        foo (el) {
+            return el.querySelectorAll('p').length
+        },
+        weight: 1
+    }
+]
+
+const justice = () => {
+    let children = body.children
+    let arrLikeChildren = Array.from(children)
+    let childrenWightArr = arrLikeChildren.map(el => {
+        let weight = 0
+        articleRoot.forEach(val => {
+            weight += val.foo(el) * val.weight
+        })
+        return weight
+    })
+    let maxWeight = Math.max(...childrenWightArr)
+    let maxIndex = childrenWightArr.indexOf(maxWeight)
+    arrLikeChildren.forEach((val, index) => {
+        if (index !== maxIndex) {
+            children[index].style.display = 'none'
+        }
+    })
+}
+//just for block useless elements. If you don't want to change the page, just remove object 'articleRoot' and  method 'justice'
+justice()
+
 const calcPos = ({top, right, bottom, left}, el) => {
     let winWidth = window.innerWidth
     let winHeight = window.innerHeight
@@ -48,7 +92,6 @@ const calcPos = ({top, right, bottom, left}, el) => {
 
 class DictExtension {
     constructor (html) {
-        this.body = utils.$('body')
         this.html = html
         this.renderInitHtml()
         this.init()
@@ -63,18 +106,21 @@ class DictExtension {
         this.initEvent()
     }
     renderInitHtml () {
-        utils.append(this.body, utils.createElement('div', null, this.html))
+        utils.append(body, utils.createElement('div', null, this.html))
     }
     initEvent () {
-        this.body.addEventListener('dblclick', (e) => {
+        chrome.runtime.onMessage.addListener((request, sender) => {
+            this.resHandle(request)
+        })
+        body.addEventListener('dblclick', (e) => {
             let selection = window.getSelection()
             let selectionText = selection.toString().trim()
             let oRange = selection.getRangeAt(0)
+            if (!selectionText.length) return
             this.oRect = oRange.getBoundingClientRect()
-            setTimeout(this.resHandle.bind(this), 200)
+            chrome.runtime.sendMessage({message: selectionText})
         })
         this.pronEl.addEventListener('click', () => {
-            console.log('what')
             this.audioEl.play()
         })
         this.closeEl.addEventListener('click', () => {
@@ -82,15 +128,10 @@ class DictExtension {
             this.audioEl.pause()
         })
     }
-    resHandle () {
-        this.res = {
-            audio: 'https://iridescent.cn/static/GoT6/Game%20of%20Thrones%20Season%206%20trailer%20music%20(-Wicked%20Game-,%20James%20Vincent%20McMorrow).mp3',
-            name: '光环',
-            info: 'halo'
-        }
+    resHandle (data) {
+        this.res = data
         utils.html(this.titleEl, this.res.name)
             .html(this.infoEl, this.res.info)
-            .show(this.dictEl)
             .setAttrs(this.audioEl, {src: this.res.audio})
         this.setPos()
     }
