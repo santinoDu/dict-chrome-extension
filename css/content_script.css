@@ -1,0 +1,72 @@
+.clearfix::after{
+    content: '';
+    display: table;
+    clear: both;
+}
+
+#_dict_box{
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 2147483647;
+    width: 300px;
+    border: 2px solid rgb(149, 203, 249);
+    background-color: #fff;
+}
+
+#_dict_box a{
+    text-decoration: none;
+}
+
+.-dict-header{
+    background-color: rgb(233, 245, 255);
+    color: rgb(52, 130, 199);
+    font-size: 24px;
+    line-height: 32px;
+    border-bottom: 1px solid rgb(171, 211, 245);
+    padding: 5px 10px;
+}
+.-dict-icono-volume{
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+    border: 7px solid;
+    border-left: none;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    box-shadow: inset 4px 0;
+    padding: 6px 3px;
+    width: 0;
+    height: 0;
+    vertical-align: middle;
+    font-style: normal;
+    text-align: left;
+    text-indent: -9999px;
+    direction: ltr;
+    color: #235bb7;
+    opacity: 0.6;
+}
+
+.-dict-close{
+    float: right;
+    color: #509bdd;
+}
+
+.-dict-content{
+    padding: 10px;
+    line-height: 1.5;
+}
+
+.-dict-content .-dict-c-title{
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.-dict-content .-dict-c-info{
+    font-size: 12px;
+}
+
+.-dict-content .-dict-audio{
+    display: none;
+}
